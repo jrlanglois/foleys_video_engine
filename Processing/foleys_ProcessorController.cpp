@@ -52,21 +52,15 @@ struct AudioProcessorAdapter : public ProcessorController::ProcessorAdapter
     public:
         PlayHead() = default;
 
-        bool getCurrentPosition (juce::AudioPlayHead::CurrentPositionInfo &result) override
+        juce::Optional<PositionInfo> getPosition() const override
         {
-            result.timeInSamples = timeInSamples;
-            result.timeInSeconds = timeInSeconds;
-            result.frameRate = frameRate;
-            return true;
+            PositionInfo pos;
+            pos.setTimeInSeconds (timeInSeconds);
+            pos.setFrameRate (frameRate);
+            return pos;
         }
 
-        bool canControlTransport() override
-        {
-            return false;
-        }
-
-        juce::int64 timeInSamples = 0;
-        double      timeInSeconds = 0.0;
+        double timeInSeconds = 0;
         juce::AudioPlayHead::FrameRateType frameRate = juce::AudioPlayHead::fpsUnknown;
 
 
@@ -104,10 +98,9 @@ struct AudioProcessorAdapter : public ProcessorController::ProcessorAdapter
         }
     }
 
-    void setPosition (juce::int64 samples, double seconds) override
+    void setPosition (double timeInSeconds) override
     {
-        playhead.timeInSamples = samples;
-        playhead.timeInSeconds = seconds;
+        playhead.timeInSeconds = timeInSeconds;
     }
 
 private:
@@ -317,9 +310,9 @@ bool ProcessorController::isActive() const
     return state.getProperty (IDs::active, true);
 }
 
-void ProcessorController::setPosition (juce::int64 timeInSamples, double timeInSeconds)
+void ProcessorController::setPosition (double timeInSeconds)
 {
-    adapter->setPosition (timeInSamples, timeInSeconds);
+    adapter->setPosition (timeInSeconds);
 }
 
 AutomationMap& ProcessorController::getParameters()

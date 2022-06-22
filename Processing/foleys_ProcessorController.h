@@ -95,9 +95,8 @@ public:
                                                 juce::ValueTree& parameterNode,
                                                 juce::UndoManager* undoManager) = 0;
 
-        virtual void setPosition (juce::int64 timeInSamples, double timeInSeconds)
+        virtual void setPosition (double timeInSeconds)
         {
-            juce::ignoreUnused (timeInSamples);
             juce::ignoreUnused (timeInSeconds);
         }
     };
@@ -116,7 +115,7 @@ public:
     void setActive (bool shouldBeActive);
     bool isActive() const;
 
-    void setPosition (juce::int64 timeInSamples, double timeInSeconds);
+    void setPosition (double timeInSeconds);
 
 private:
 
